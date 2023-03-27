@@ -4,7 +4,7 @@
       <router-link to="home" class="routerlink" style="margin-right: 1vw;"> Profile </router-link> |
    
       <router-link to="sell" class="routerlink"> Sell </router-link>
-      <hr>
+      <hr id="navline">
      
     </div>
     
@@ -78,11 +78,12 @@ a { text-decoration: none; }
 
 }
 
-hr {
+#navline {
     height: 1px;
-    width: 10vw;
+    width: 30%;
+    margin: auto;
+    margin-top: 10px;
     background-color: black;
 }
-
 
 </style>

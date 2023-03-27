@@ -21,7 +21,7 @@
         <div class = "formli">
 
         <label for="name">Name </label>
-        <input type = "text" id = "name" required = "" placeholder = "John Doe"> <br><br>
+        <input type = "text" id = "name" required = "" placeholder = "John Doe" v-bind:value="user_name"> <br><br>
 
         <label for="meetup">Meet Up Area</label>
         <input type = "text" id = "meetup" required = "" placeholder = "Clementi"> <br><br>
@@ -30,7 +30,7 @@
         <input type = "file" id = "qrcode" accept="image/png, image/jpeg" > <br><br>
 
         <div id = "buttonsupdate">
-          <button id = "cancelbutton" type="button">Cancel</button> 
+          <button id = "cancelbutton" type="button" @click="onClickCancel">Cancel</button> 
           <button id = "savebutton" type="button" v-on:click="saveProfile">Save</button> 
         </div>
         </div>
@@ -45,9 +45,23 @@
   import firebaseApp from '../firebase.js';
   import { getFirestore } from "firebase/firestore";
   import { doc, setDoc } from "firebase/firestore";
-  const db = getFirestore(firebaseApp);
+  import { getAuth } from 'firebase/auth';
   
+  const db = getFirestore(firebaseApp);
+  const auth = getAuth();
+
   export default {
+      data() {
+        return {
+          user_name: "",
+        }
+      },
+
+      mounted() {
+        this.user_name = auth.currentUser.displayName
+        console.log(this.user_name)
+      },
+
       methods: {
         async displayProfileImage() {
           var fReader = new FileReader();
@@ -70,13 +84,14 @@
           let qrcode = document.getElementById("qrcode").value
           let image = document.getElementById("uploadbutton").value
           try {
-            const docRef = await setDoc(doc(db, "Profiles", Math.random().toString()), { // need to change to unique userID
+            const docRef = await setDoc(doc(db, "Profiles", user.uid), { // need to change to unique userID
               Name: name,
               Meet_Up: meetUp,
               QRCode: qrcode, 
               Profile_Image: image
             })
             alert("Profile saved!")
+            this.$router.push({name: "Home"})
           } catch(error) {
             alert("Error saving profile: ", error)
           }
@@ -90,6 +105,10 @@
                 document.getElementById("profilephoto").src = "default.png"
                 alert("Profile Image Successfully Deleted")
             }
+        },
+
+        onClickCancel() {
+          this.$router.push({name: 'Home'})
         }
       }
   }

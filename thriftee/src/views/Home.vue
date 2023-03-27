@@ -23,10 +23,11 @@
 
 <script>
 import PersonalProfileView from '../components/PersonalProfileView.vue'
+
 export default {
   name: 'App',
   components:{
-    PersonalProfileView
+    PersonalProfileView,
   }
 }
 </script>
