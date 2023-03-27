@@ -29,7 +29,12 @@ export default {
   created() {
     const auth = getAuth()
     onAuthStateChanged(auth, (user) => {
-        this.user = !!user;
+        // this.user = !!user;
+        if (user) {
+          this.user = true;
+        } else {
+          this.user = false;
+        }
     })
   }
 }
