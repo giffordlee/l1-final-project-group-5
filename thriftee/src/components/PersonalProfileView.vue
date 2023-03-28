@@ -33,7 +33,7 @@
 
     <div id = "container2">
         <div>
-            <router-link to="/"
+            <router-link to="/home"
                 custom
                 v-slot="{ navigate }" >
                 <button @click="navigate" role="link" id = "listingsbutton" type="button"> <em>Listings</em></button> 

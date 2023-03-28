@@ -21,7 +21,7 @@
         <div class = "formli">
 
         <label for="name">Name </label>
-        <input type = "text" id = "name" required = "" placeholder = "John Doe" v-bind:value="user_name"> <br><br>
+        <input type = "text" id = "name" required = "" placeholder = "John Doe" v-model="user_name"> <br><br>
 
         <label for="meetup">Meet Up Area</label>
         <input type = "text" id = "meetup" required = "" placeholder = "Clementi"> <br><br>
@@ -45,21 +45,25 @@
   import firebaseApp from '../firebase.js';
   import { getFirestore } from "firebase/firestore";
   import { doc, setDoc } from "firebase/firestore";
-  import { getAuth } from 'firebase/auth';
+  import { getAuth, onAuthStateChanged } from 'firebase/auth';
   
   const db = getFirestore(firebaseApp);
-  const auth = getAuth();
+  
 
   export default {
       data() {
         return {
-          user_name: "",
+          user_name: null,
         }
       },
 
-      mounted() {
-        this.user_name = auth.currentUser.displayName
-        console.log(this.user_name)
+      created() {
+        const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            this.user_name = user.displayName
+          }
+        })
       },
 
       methods: {
@@ -83,6 +87,8 @@
           let meetUp = document.getElementById("meetup").value
           let qrcode = document.getElementById("qrcode").value
           let image = document.getElementById("uploadbutton").value
+          const auth = getAuth();
+          const user = auth.currentUser;
           try {
             const docRef = await setDoc(doc(db, "Profiles", user.uid), { // need to change to unique userID
               Name: name,
@@ -95,7 +101,6 @@
           } catch(error) {
             alert("Error saving profile: ", error)
           }
-          window.location.reload()
         }, 
         deleteProfileImage() {
             if (document.getElementById("uploadbutton").value == "") {
